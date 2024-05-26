@@ -20,7 +20,9 @@ export default function Forewarning() {
       {/*插入 天气预报 组件 */}
       <Weather />
       {/*插入 GPS 组件 */}
-      <GPS />
+      <div className="px-8">
+        <GPS />
+      </div>
       {/*插入 折线图 组件 */}
       <Chart />
     </div>

@@ -9,6 +9,8 @@ export const weatherStore = proxy({
   error: null,
   isLoading: false,
   cityCode: "",
+  "lat": 0,
+  "lng": 0,
   weatherInfo: null,
   getCity: async () => {
     try {
@@ -25,6 +27,8 @@ export const weatherStore = proxy({
       );
       const locationData = locationResponse.data;
       weatherStore.city = locationData.city;
+      weatherStore.lat = Number(locationData.latitude);
+      weatherStore.lng = Number(locationData.longitude);
 
       // 查找省份和城市的 adcode
       const provinceData = citycode.find(

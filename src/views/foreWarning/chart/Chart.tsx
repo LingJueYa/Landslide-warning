@@ -31,7 +31,7 @@ export default function Chart() {
     },
   };
   return (
-    <div className="w-full h-fit p-10">
+    <div className="w-full h-fit  p-10">
       <Line {...config} />
     </div>
   );
