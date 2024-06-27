@@ -1,33 +1,19 @@
 {
-  /* 预警 - 天气预报组件 */
+  /*气候信息组件：温度、湿度、土壤湿度、风力 */
 }
-import { useEffect, useMemo, useCallback } from "react";
-{
-  /*导入 全局状态 管理 */
-}
+import { useCallback } from "react";
 import { useSnapshot } from "valtio";
+import { dataStore } from "../../../store/data";
 import { weatherStore } from "../../../store/weather";
 
-export default function Weather() {
+export default function Climate() {
   {
     /*创建 状态 快照 */
   }
+  const dataSnapShot = useSnapshot(dataStore);
   const weatherSnapShot = useSnapshot(weatherStore);
-  {
-    /*请求数据 */
-  }
-  useEffect(() => {
-    weatherSnapShot.getCity();
-  }, []);
 
-  // 使用 useMemo 缓存天气信息
-  const weatherInfo = useMemo(
-    () => weatherSnapShot.weatherInfo,
-    [weatherSnapShot.weatherInfo]
-  );
-
-  // 使用 useCallback 缓存模板
-  const weatherDetail = useCallback(
+  const CliDetail = useCallback(
     (label, value) => (
       <div className="flex">
         <p className="mr-2">{label}:</p>
@@ -40,33 +26,38 @@ export default function Weather() {
     <div className="w-full h-fit p-10 bg-white overflow-hidden">
       <div className="grid grid-cols-4 gap-4 text-black">
         <div className="flex flex-col items-center justify-center p-3 bg-white rounded-lg shadow-lg transition-all duration-300 ease-in-out transform-gpu hover:shadow-xl">
-          {weatherInfo && (
-            <>
-              {weatherDetail("温度", weatherInfo.lives[0].temperature)}
-              {weatherDetail("湿度", weatherInfo.lives[0].humidity)}
-            </>
+          {dataSnapShot.temperature ? (
+            <>{CliDetail("温度", dataSnapShot.temperature)}</>
+          ) : (
+            <>{CliDetail("温度", "获取中")}</>
           )}
         </div>
         <div className="flex flex-col items-center justify-center p-3 bg-white rounded-lg shadow-lg transition-all duration-300 ease-in-out transform-gpu hover:shadow-xl">
-          {weatherInfo && (
-            <>
-              {weatherDetail("风力", weatherInfo.lives[0].windpower)}
-              {weatherDetail("风向", weatherInfo.lives[0].winddirection)}
-            </>
+          {dataSnapShot.humidity ? (
+            <>{CliDetail("湿度", dataSnapShot.humidity)}</>
+          ) : (
+            <>{CliDetail("湿度", "获取中")}</>
           )}
         </div>
         <div className="flex flex-col items-center justify-center p-3 bg-white rounded-lg shadow-lg transition-all duration-300 ease-in-out transform-gpu hover:shadow-xl">
-          {weatherInfo && (
-            <>
-              {weatherDetail("天气", weatherInfo.lives[0].weather)}
-              {weatherDetail("海拔", weatherInfo.lives[0].altitude)}
-            </>
+          {dataSnapShot.soilHumidity ? (
+            <>{CliDetail("土壤湿度", dataSnapShot.soilHumidity)}</>
+          ) : (
+            <>{CliDetail("土壤湿度", "获取中")}</>
           )}
         </div>
         <div className="flex flex-col items-center justify-center p-3 bg-white rounded-lg shadow-lg transition-all duration-300 ease-in-out transform-gpu hover:shadow-xl">
-          {weatherInfo && (
-            <>{weatherDetail("温度", weatherInfo.lives[0].temperature)}</>
-          )}
+          {CliDetail("风力", "3级")}
+          {/* {weatherSnapShot.weatherInfo ? (
+            <>
+              {CliDetail(
+                "风力",
+                weatherSnapShot.weatherInfo.lives[0].windpower
+              )}
+            </>
+          ) : (
+            <>{CliDetail("风力", "获取中")}</>
+          )} */}
         </div>
       </div>
     </div>

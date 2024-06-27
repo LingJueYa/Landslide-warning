@@ -1,7 +1,9 @@
 import { proxy } from "valtio";
 import axios from "axios";
-import settings from "../../public/json/setting.json";
+import { adcodeKeyConfig } from "../config/adcodeKey";
 import citycode from "../../public/json/citycode.json";
+
+const adcodeKey = adcodeKeyConfig.adcodeKey;
 
 export const weatherStore = proxy({
   ip: "",
@@ -9,8 +11,8 @@ export const weatherStore = proxy({
   error: null,
   isLoading: false,
   cityCode: "",
-  "lat": 0,
-  "lng": 0,
+  lat: 0,
+  lng: 0,
   weatherInfo: null,
   getCity: async () => {
     try {
@@ -42,7 +44,7 @@ export const weatherStore = proxy({
           weatherStore.cityCode = cityData.adcode;
           // 使用城市代码发起获取天气信息的请求
           const weatherResponse = await axios.get(
-            `https://restapi.amap.com/v3/weather/weatherInfo?key=${settings.adcode_key}&city=${weatherStore.cityCode}`
+            `https://restapi.amap.com/v3/weather/weatherInfo?key=${adcodeKey}&city=${weatherStore.cityCode}`
           );
           const weatherData = weatherResponse.data;
           weatherStore.weatherInfo = weatherData; // 存储天气信息

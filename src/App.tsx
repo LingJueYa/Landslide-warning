@@ -12,10 +12,16 @@ import "./styles/index.css";
 }
 import Menu from "./views/menus/Menus";
 
+import { useAutoFetchData } from "./api/api";
+
 {
   /*示波器顶级组件 */
 }
 const App = () => {
+  {
+    /*请求接口 */
+  }
+  useAutoFetchData();
   return (
     <div className="relative box-border flex bg-[#f6f6f6]">
       {/*子路由组件插槽 */}
@@ -26,5 +32,4 @@ const App = () => {
     </div>
   );
 };
-
 export default App;

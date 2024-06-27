@@ -1,38 +1,79 @@
-{
-  /* 预警 - 图表组件 */
-}
-{
-  /*导入 图表 组件 */
-}
-import { Line } from "@ant-design/plots";
+import React, { useRef, useEffect, useMemo } from "react";
+import Highcharts from "highcharts";
+import HighchartsReact from "highcharts-react-official";
+import { chartStore } from "../../../store/charts";
+import { useSnapshot } from "valtio";
+import useWebSocketHandler from "../../../hooks/useWebSocketHandler";
 
-export default function Chart() {
-  const config = {
-    data: {
-      type: "fetch",
-      value:
-        "https://render.alipay.com/p/yuyan/180020010001215413/antd-charts/line-connect-nulls.json",
-      transform: [
+const WaveformChart: React.FC = () => {
+  const waveformRef = useRef<HTMLDivElement>(null);
+  const chartSnapshot = useSnapshot(chartStore);
+  const { readyState, connect, disconnect } = useWebSocketHandler();
+
+  const data = useMemo(
+    () => chartSnapshot.chartData.map((point) => ({ ...point })),
+    [chartSnapshot.chartData]
+  );
+
+  const chartOptions = useMemo(
+    () => ({
+      chart: {
+        type: "line",
+        height: "550px",
+      },
+      title: {
+        text: null,
+      },
+      xAxis: {
+        title: {
+          text: "ID",
+        },
+        gridLineWidth: 1,
+        gridLineColor: "#f0f0f0",
+      },
+      yAxis: {
+        title: {
+          text: "风险分数",
+        },
+        gridLineWidth: 1,
+        gridLineColor: "#f0f0f0",
+      },
+      series: [
         {
-          type: "map",
-          callback: (d) => ({
-            ...d,
-            close: new Date(d.date).getUTCMonth() < 3 ? NaN : d.close,
-          }),
+          name: "Risk Score",
+          data: data,
         },
       ],
-    },
-    height: 300,
-    xField: (d) => new Date(d.date),
-    yField: "close",
-    connectNulls: {
-      connect: true,
-      connectStroke: "#aaa",
-    },
-  };
+    }),
+    [data]
+  );
+
+  useEffect(() => {
+    if (waveformRef.current) {
+      Highcharts.charts.forEach((chart) => {
+        if (chart) {
+          chart.series[0].setData(data, true);
+        }
+      });
+    }
+  }, [data]);
+
   return (
-    <div className="w-full h-fit  p-10">
-      <Line {...config} />
+    <div className="relative w-full h-full">
+      <button
+        onClick={() => {
+          connect();
+        }}
+        disabled={readyState === 1}
+      >
+        run
+      </button>
+      <button onClick={() => disconnect()}>stop</button>
+      <div ref={waveformRef} className="h-full mt-6">
+        <HighchartsReact highcharts={Highcharts} options={chartOptions} />
+      </div>
     </div>
   );
-}
+};
+
+export default WaveformChart;
