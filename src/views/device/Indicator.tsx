@@ -1,7 +1,5 @@
 // 设备指标组件
 
-// 导入第三方库
-import { ArrowDownIcon, ArrowUpIcon } from "@heroicons/react/20/solid";
 // 导入数据
 import { indicator } from "../../data/indicator";
 
